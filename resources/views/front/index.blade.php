@@ -672,10 +672,8 @@
 @endsection
 @section('scripts')
     <!-- Swiper JS -->
-    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
-
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.19.0/jquery.validate.min.js"></script>
+    <script src="https://fastly.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
     <!-- Initialize Swiper -->
     <script>
         var swiper = new Swiper(".mySwiper", {
@@ -742,7 +740,6 @@
     <script>
         $(document).on('click', '#send_the_order', function(e) {
             e.preventDefault();
-
             $('input[type=text]').blur();
             var quantity_all_products = $('#quantity_all_products').val();
             console.log(quantity_all_products);
