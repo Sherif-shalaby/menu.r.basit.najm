@@ -48,11 +48,8 @@ class OrderController extends Controller
         $user_id = session('user_id');
 //        dd($request->all());
         try {
-
-
-
-
-            $data['sales_note'] = $request->sales_note;
+            $string = trim(preg_replace('/\s+/', ' ', $request->sales_note));
+            $data['sales_note'] = $string;
             $data['store_id'] = 0;
             $data['customer_name'] = $request->customer_name;
             $data['phone_number'] = $request->phone_number;
@@ -157,26 +154,26 @@ class OrderController extends Controller
             }
 
             if ($order->delivery_type == 'home_delivery') {
-                $text .= "%0D%0A" . __('lang.home_delivery');
-                $text .= "%0D%0A" . __('lang.address')."+".$order->address;
+                $text.= "%0D%0A". __('lang.home_delivery');
+                $text.= "%0D%0A". __('lang.address')."+".$order->address;
             }else if($order->delivery_type == 'dining_in'){
-                $text .= "%0D%0A" . __('lang.dinnig_in_restaurant');
-                $text .= "%0D%0A" . __('lang.table_no')."+".$order->table_no;
+                $text .= "%0D%0A". __('lang.dinnig_in_restaurant');
+                $text.="%0D%0A".__('lang.table_no')."+".$order->table_no;
             }
             else {
-                $text .= "%0D%0A" . __('lang.i_will_pick_it_up_my_self');
+                $text.="%0D%0A".__('lang.i_will_pick_it_up_my_self');
             }
             if ($order->payment_type == 'cash_on_delivery') {
-                $text .= "%0D%0A" . __('lang.cash_on_delivery');
+                $text.="%0D%0A".__('lang.cash_on_delivery');
             } else {
-                $text .= "%0D%0A" . __('lang.pay_online');
+                $text.="%0D%0A".__('lang.pay_online');
             }
-            $text .= "%0D%0A" . __('lang.customer') . "%3A" . $order->customer_name;
-            $text .= "%0D%0A" . __('lang.phone_number') . "%3A" . $order->phone_number;
-            $text .= "%0D%0A" . __('lang.note') . "%3A" . $order->sales_note;
+            $text.="%0D%0A".__('lang.customer')."%3A".$order->customer_name;
+            $text.="%0D%0A".__('lang.phone_number')."%3A".$order->phone_number;
+            $text.="%0D%0A".__('lang.note')."%3A".$order->sales_note;
 
             $whatsapp = System::getProperty('whatsapp');
-            $url = "https://api.whatsapp.com/send/?phone=" . $whatsapp . "&text=" . $text . "&app_absent=0";
+            $url = "https://api.whatsapp.com/send/?phone=".$whatsapp."&text=".$text."&app_absent=0";
             session()->put('order_completed', '1');
             DB::commit();
             return redirect()->to($url);
@@ -190,9 +187,10 @@ class OrderController extends Controller
                 'success' => false,
                 'msg' => __('lang.something_went_wrong')
             ];
+            return redirect()->back()->with('status', $output);
         }
 
-        return redirect()->back()->with('status', $output);
+        
     }
 
     /**
