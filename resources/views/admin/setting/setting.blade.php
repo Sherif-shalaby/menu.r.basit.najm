@@ -746,8 +746,8 @@ $page_background_image=App\Models\System::where('key','page_background_image')->
             // Set up Croppie options
             var croppieOptions = {
                 viewport: {
-                    width: 450,
-                    height: 250,
+                    width: 600,
+                    height: 200,
                     type: 'square' // or 'square'
                 },
                 boundary: {
