@@ -557,7 +557,7 @@ $page_background_image=App\Models\System::where('key','page_background_image')->
                         });
                     });
                     preview.appendChild(deleteBtn);
-                    const cropBtn = document.createElement('span');
+                    var cropBtn = document.createElement('span');
                     cropBtn.setAttribute("data-toggle", "modal")
                     cropBtn.setAttribute("data-target", "#pageModal")
                     cropBtn.classList.add('crop-btn');

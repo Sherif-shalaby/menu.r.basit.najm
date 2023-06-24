@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="{{asset('css/style.css')}}">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{asset('css/main.css')}}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="{{asset('css/swiper-bundle.min.css')}}" />
 
     <style>
         .div-containerall{
@@ -672,8 +672,8 @@
 @endsection
 @section('scripts')
     <!-- Swiper JS -->
-    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.19.0/jquery.validate.min.js"></script>
-    <script src="https://fastly.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+    <script src="{{ asset('vendor/jquery-validation/jquery.validate.min.js')}}"></script>
+    <script src="{{ asset('js/swiper-bundle.min.js')}}"></script>
     <!-- Initialize Swiper -->
     <script>
         var swiper = new Swiper(".mySwiper", {
