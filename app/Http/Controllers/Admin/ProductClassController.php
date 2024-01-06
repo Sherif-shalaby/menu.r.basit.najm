@@ -295,7 +295,7 @@ class ProductClassController extends Controller
 
 
 
-            $this->commonUtil->addSyncDataWithPos('ProductClass', $class, $data, 'PUT', 'product-class');
+            // $this->commonUtil->addSyncDataWithPos('ProductClass', $class, $data, 'PUT', 'product-class');
 
             $output = [
                 'success' => true,

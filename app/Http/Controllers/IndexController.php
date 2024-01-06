@@ -48,7 +48,8 @@ class IndexController extends Controller
             $q->where('active', 1)->orderBy('sort')->orderBy('created_at','desc');
         }])->orderBy('sort')
             ->orderBy('created_at','desc')->where('status', 1)
-            ->where('name', '!=', 'Extras')->get();
+            ->get();
+            // ->where('name', '!=', 'Extras')
         $month_array = $this->commonUtil->getMonthsArray();
         $dining_tables = DiningTable::pluck('name', 'id');
         return view('front.index')->with(compact(

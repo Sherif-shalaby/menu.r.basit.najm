@@ -280,7 +280,7 @@
                         <div class="preview-container">
                             @if(!empty($product_class->getFirstMediaUrl('product_class')))
                                     <div id="preview{{ $product_class->id }}" class="preview">
-                                          <img src="{{ !empty($product_class->getFirstMediaUrl('product_class')) ? $product_class->getFirstMediaUrl('product_class') : asset('uploads/' . session('logo')) }}"
+                                          <img src="{{ !empty($product_class->getFirstMediaUrl('product_class')) ? $product_class->getFirstMediaUrl('product_class') : null }}"
                                                id="img{{  $product_class->id }}"   alt="">
                               
                                         <div class="action_div"></div>
@@ -320,9 +320,7 @@
                 </div>
             </div>
 
-            <div class="col-10 offset-1">
-                <div class="preview-container"></div>
-            </div>
+
         
 
             <div id="cropped_images"></div>
@@ -373,6 +371,7 @@
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
+
 <script>
     @if($product_class)
     
@@ -399,7 +398,6 @@
     
     @endif
     </script>
-
 <script>
     $("#edit-data-btn").on("click",function(e){
 
