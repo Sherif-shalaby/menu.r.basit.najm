@@ -441,6 +441,7 @@
                                         <div class="class-underline"> </div>
                                     </div>
                                     <div class="col-md-12"  >
+                                        <input type="hidden" value="{{env('ENABLE_POS_SYNC')==1?"1":"0"}}" class="enable_pos"/>
                                         @foreach($category->products as $product)
                                             <div class="menus ">
                                                 @if(\App\Models\System::getProperty('active_image_product'))
@@ -468,6 +469,7 @@
                                     </div>
                                 </div>
                             @endforeach
+                            <input type="hidden" id="productsInput" name="products" />
 
                         </div>
                     </div>
@@ -529,14 +531,14 @@
                                                class="c-f-s bg12 border-b border-dark rounded-lg w-full px-4 w-3/5 @if ($locale_direction == 'rtl') float-left @else float-right @endif "
                                                value="">
                                     </div>
-                                    <div class="flex flex-row py-2 flow-root">
+                                    {{-- <div class="flex flex-row py-2 flow-root">
                                         <label
                                             class="font-semibold text-base cl0 mtext-101 pr-2 pt-1 @if ($locale_direction == 'rtl') float-right @else float-left @endif"
                                             for="phone_number">@lang('lang.phone_number')</label>
                                         <input type="text" name="phone_number" required
                                                class="c-f-s bg12 border-b border-dark rounded-lg w-full px-4 w-3/5 @if ($locale_direction == 'rtl') float-left @else float-right @endif "
                                                value="">
-                                    </div>
+                                    </div> --}}
                                     <div class="flex flex-row py-2 flow-root">
                                         <label
                                             class="font-semibold text-base cl0 mtext-101 pr-2 pt-1 @if ($locale_direction == 'rtl') float-right @else float-left @endif"
@@ -630,9 +632,9 @@
 
                                 <div class="col-md-12 inside_restaurant_div hidden ">
                                     <label class="w-1/4 font-semibold text-base cl0 mtext-101 pr-2 pt-1 float-left"
-                                           for="table_no">@lang('lang.table_no')</label>
+                                           for="table_num">@lang('lang.table_num')</label>
 
-                                    <select id="table_no" name="table_no"
+                                    <select id="table_num" name="table_num"
                                             class="w-3/4 mx-2 bg12 border border-gray-300 cl5 text-sm rounded-lg focus:ring-blue-500 focus:bg12 border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:bg12 border-blue-500">
                                         <option value="">@lang('lang.please_select')</option>
                                         @foreach ($dining_tables as $key => $value)
@@ -655,15 +657,16 @@
                     <span class="col-md-4 col-6">
 
                     </span>
-                    <button class="col-md-4 col-6  button-total" id="send_the_order">
-                        @lang('lang.send_the_order')
-                    </button>
+                   
                 </div>
 
                 <input type="hidden" id="quantity_all_products" value="0">
                 <input type="hidden" id="currency" value="{{session('currency')['code']}}">
                 <input type="hidden" id="total_price"  value="0">
                 {!! Form::close() !!}
+                <button class="col-md-4 col-6  button-total" id="send_the_order">
+                    @lang('lang.send_the_order')
+                </button>
 
             </div>
         </div>
@@ -730,10 +733,17 @@
                 return false;
             });
             $('.plus').click(function () {
+                var enable_pos=$('.enable_pos').val();
                 var $input = $(this).parent().find('input');
                 $input.val(parseInt($input.val()) + 1);
                 $input.change();
-                return false;
+                // if(enable_pos=="1"){
+                //     var id= $(this).parent().find('input').data('id');
+                    
+                // }else{
+
+                // }
+                // return false;
             });
         });
     </script>
@@ -750,13 +760,27 @@
                         scrollTop: firstInvalidField.offset().top
                     }, 500);
                     firstInvalidField.focus();
-                }else{
+                }
+                else{
+                    var $input = '';
+                    var $price = '';
+                    var products=[];
                     $('.quantity').each(function() {
                         if ($(this).val() == '' ||$(this).val()==0 ) {
                             $(this).remove();
+                        }else{
+                            $input = $(this).parent().find('input').data('id');
+                            $price = $(this).parent().find('input').data('price');
+                            products.push({'product_id': $input,'quantity':$(this).val(),'price':$price});
                         }
                     });
+                    var productsJson = JSON.stringify(products);
+                    $('#productsInput').val(productsJson);
+                    // console.log(productsJson);
                     $('#cart_form').submit();
+                    $('#productsInput').val("");
+                    $('input').val("");
+                    $('quantity').val(0);
                 }
             }else{
                 swal("Oops...", '{{__('lang.Please choose at least one product')}}', "error");
@@ -812,10 +836,10 @@
         $(document).on('change', 'input[name="delivery_type"]', function() {
             if ($(this).val() == 'dining_in') {
                 $('.inside_restaurant_div').removeClass('hidden');
-                $('#table_no').attr('required', true);
+                $('#table_num').attr('required', true);
             } else {
                 $('.inside_restaurant_div').addClass('hidden');
-                $('#table_no').attr('required', false);
+                $('#table_num').attr('required', false);
             }
         })
 

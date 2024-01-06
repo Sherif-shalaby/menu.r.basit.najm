@@ -45,10 +45,18 @@ class IndexController extends Controller
         $categories = ProductClass::wherehas('products',function ($q){
             $q->where('active', 1)->orderBy('sort')->orderBy('created_at','desc');
         })->with(['products'=>function ($q){
-            $q->where('active', 1)->orderBy('sort')->orderBy('created_at','desc');
+            $q->orderBy('sort')->orderBy('created_at','desc');
+            if(env('ENABLE_POS_SYNC')){
+                $q->where('is_raw_material', 0);
+                $q->whereNull('deleted_at');
+                $q->where('menu_active', 1);
+            }else{
+                $q->where('active', 1);
+            }
         }])->orderBy('sort')
             ->orderBy('created_at','desc')->where('status', 1)
-            ->where('name', '!=', 'Extras')->get();
+            ->get();
+            // ->where('name', '!=', 'Extras')
         $month_array = $this->commonUtil->getMonthsArray();
         $dining_tables = DiningTable::pluck('name', 'id');
         return view('front.index')->with(compact(

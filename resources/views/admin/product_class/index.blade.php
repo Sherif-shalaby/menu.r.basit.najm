@@ -21,8 +21,8 @@
                 <tr>
                     <th>@lang('lang.image')</th>
                     <th>@lang('lang.name')</th>
-                    <th>@lang('lang.products_count')</th>
                     {{-- <th>@lang('lang.description')</th> --}}
+                    <th>@lang('lang.products_count')</th>
                     <th>@lang('lang.sort')</th>
                     <th>@lang('lang.status')</th>
 
@@ -52,8 +52,8 @@
                 url: dt_lang_url,
             },
             lengthMenu: [
-                [10, 25, 50, 75, 100, 200, -1],
-                [10, 25, 50, 75, 100, 200,"All"],
+                [10, 25, 50, 75, 100, 200, 500, -1],
+                [10, 25, 50, 75, 100, 200, 500, "All"],
             ],
             dom: "lBfrtip",
             buttons: buttons,

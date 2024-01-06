@@ -213,7 +213,6 @@
             color: hsl(48, 100%, 67%);
         }
     }
-    
 </style>
 
 
@@ -240,9 +239,9 @@
 
             <div class="col-md-4">
                 <div class="form-group">
-                    <x-adminlte-input name="name" label="{{ __('lang.name') }}" placeholder="{{ __('lang.name') }}"
-                        value="{{ $product->name }}" enable-old-support>
-                        <x-slot name="appendSlot">
+                    <x-adminlte-input name="name" required label="{{ __('lang.name') }}" placeholder="{{ __('lang.name') }}"
+                        value="{{ $product->name }}" enable-old-support style="width: 80%">
+                        <x-slot name="prependSlot">
                             <div class="input-group-text text-primary translation_btn" data-type="product">
                                 <i class="fas fa-globe"></i>
                             </div>
@@ -287,11 +286,11 @@
                             <div class="preview-container">
                                 @if(!empty($product->getFirstMediaUrl('product')))
                                     <div id="preview{{ $product->id }}" class="preview">
-                                          <img src="{{ !empty($product->getFirstMediaUrl('product')) ? $product->getFirstMediaUrl('product') : asset('uploads/' . session('logo')) }}"
-                                               id="img{{  $product->id }}"   alt="">
-                              
+                                        <img src="{{ !empty($product->getFirstMediaUrl('product')) ? images_asset($product->getFirstMediaUrl('product')) : NULL }}"
+                                            id="img{{  $product->id }}"   alt="">
+                            
                                         <div class="action_div"></div>
-                                      
+                                    
                                         <button type="button"
                                             class="delete-btn"><i
                                             style="font-size: 20px;"
@@ -307,7 +306,7 @@
                                                 class="fas fa-crop"></i>
                                         </button>
                                     </div>
-                            @endif
+                                @endif
                             </div>
                         </div>
             </div>
@@ -347,7 +346,7 @@
                 <div class="col-md-4">
                     @include('admin.partial.translation_textarea', [
                         'attribute' => 'product_details',
-                        'translations' =>$product->details_translations,
+                        'translations' => $product->details_translations,
                     ])
                 </div>
             </div>
@@ -362,7 +361,7 @@
             <div class="col-md-3">
                 <div class="form-group">
                     {!! Form::label('sell_price', __('lang.sell_price'), []) !!}
-                    {!! Form::text('sell_price', @num_format($product->sell_price), ['class' => 'form-control','id'=>'sell_price', 'placeholder' => __('lang.sell_price')]) !!}
+                    {!! Form::text('sell_price', @num_format($product->sell_price), ['class' => 'form-control','id'=>'sell_price', 'placeholder' => __('lang.sell_price'), 'required']) !!}
                 </div>
             </div>
 
@@ -398,7 +397,11 @@
                 <div class="col-md-2">
                     <div class="form-group">
                         {!! Form::label('active', __('lang.status'), []) !!} <br>
+                        @if(env('ENABLE_POS_SYNC'))
+                        {!! Form::checkbox('menu_active', 1, $product->menu_active ? true : false, ['class']) !!}
+                        @else
                         {!! Form::checkbox('active', 1, $product->active ? true : false, ['class']) !!}
+                        @endif
                     </div>
                 </div>
 
@@ -422,7 +425,7 @@
                                         class="fa fa-plus"></i></button></th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="variation_row">
                         @foreach ($product->variations as $item)
                             @include(
                                 'admin.product.partial.edit_variation_row',
@@ -610,8 +613,8 @@
             });
         });
     }
-    // edit Case
-    @if($product)
+        // edit Case
+        @if($product)
                 document.getElementById("cropBtn{{ $product->id }}").addEventListener('click', () => {
                     console.log(("#exampleModal"))
                     setTimeout(() => {

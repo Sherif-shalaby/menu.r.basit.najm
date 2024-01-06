@@ -126,7 +126,7 @@ class CartController extends Controller
     {
         // return request()->quantity;
         try {
-            $quantity = !empty(request()->quantity) ? request()->quantity : 1;
+            $quantity = !empty(request()->quantity) ? abs(request()->quantity) : 1;
             $variation = Variation::find( $id);
             $product = Product::find($variation->product_id);
             $IsproductHasDiscount = Product::where('id',$variation->product_id)
@@ -138,25 +138,34 @@ class CartController extends Controller
             $price = $price - $product_discount;
             $item_exist = \Cart::session($user_id)->get($variation->id);
             // return $item_exist->quantity+$quantity;
+            if(strpos($quantity,',')!==false){
+                $quantity=str_replace(',','.',$quantity);
+            }
             if (!empty($item_exist)) {
+                $attributes=$item_exist->attributes;
+                $attributes['quantity']=strpos($quantity,'.')!==false?number_format((float)$item_exist->attributes->quantity+$quantity, 3, '.'):$item_exist->attributes->quantity+$quantity;
                 \Cart::session($user_id)->update($variation->id, array(
-                    // 'quantity' =>  $item_exist->quantity+$quantity
-                    'quantity' =>  array(
-                        'relative' => false,
-                        'value' => $item_exist->quantity+$quantity
-                    ),
+                    'attributes' =>$attributes
                 ));
+                // \Cart::session($user_id)->update($variation->id, array(
+                //     // 'quantity' =>  $item_exist->quantity+$quantity
+                //     'quantity' =>  array(
+                //         'relative' => false,
+                //         'value' => $item_exist->quantity+$quantity
+                //     ),
+                // ));
             } else {
                 \Cart::session($user_id)->add(array(
                     'id' => $variation->id,
                     'name' => $product->name,
                     'price' => $price,
-                    'quantity' =>  $quantity,
+                    'quantity' =>  1, ///unused quantity
                     'attributes' => [
                         'variation_id' => $variation->id,
                         'extra' => false,
                         'discount' => $product_discount,
                         'size'=>$variation->size->name,
+                        'quantity' => $quantity  ///used quantity
                     ],
                     'associatedModel' => $product
                 ));
