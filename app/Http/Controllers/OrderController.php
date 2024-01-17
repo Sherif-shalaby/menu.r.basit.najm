@@ -99,29 +99,36 @@ class OrderController extends Controller
             $order->discount_amount = $order->order_details->sum('discount') ?? 0;
             $order->save();
 
-            if (env('ENABLE_POS_SYNC') && isset($request->table_num)) {
+            if(env('ENABLE_POS_SYNC')){
+
                 $options = array(
                     'cluster' =>  env('PUSHER_APP_CLUSTER'),
                     'useTLS' => true
                 );
-
-
+        
+        
                 $pusher = new Pusher(
                     env('PUSHER_APP_KEY'),
                     env('PUSHER_APP_SECRET'),
                     env('PUSHER_APP_ID'),
                     $options
                 );
-
-                $table = DiningTable::find($order->table_no);
+                if(!empty($request->table_no)){
+                $table=DiningTable::find($order->table_no);
                 $data = [
-                    'order_id' => $order->id,
-                    'table_no' => $order->table_no,
-                    'room_no' => $table->dining_room_id,
-                    'orders_count' => $order->order_details()->count()
+                    'order_id'=>$order->id,
+                    'table_no'=>$order->table_no,
+                    'room_no'=>$table->dining_room_id,
+                    'orders_count'=>$order->order_details()->count()
                 ];
+                }else{
+                    $data = [
+                        'order_id'=>$order->id,
+                        'table_no'=>'not exist',
+                        'orders_count'=>$order->order_details()->count()
+                    ];
+                }
                 $pusher->trigger('order-channel', 'new-order', $data);
-                
             }
 
 
