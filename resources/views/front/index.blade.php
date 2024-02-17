@@ -366,7 +366,9 @@
         input.quantity {
             padding: 1px;
         }
-
+        .text-color {
+            color: #ffffff; 
+        }
     </style>
     @if(!\App\Models\System::getProperty('active_underline'))
         <style>
@@ -528,7 +530,7 @@
                                             class="font-semibold text-base cl0 mtext-101 pr-2 pt-1 @if ($locale_direction == 'rtl') float-right @else float-left @endif"
                                             for="customer_name">@lang('lang.name')</label>
                                         <input type="text" name="customer_name" required
-                                               class="c-f-s bg12 border-b border-dark rounded-lg w-full px-4 w-3/5 @if ($locale_direction == 'rtl') float-left @else float-right @endif "
+                                               class="text-color c-f-s bg12 border-b border-dark rounded-lg w-full px-4 w-3/5 @if ($locale_direction == 'rtl') float-left @else float-right @endif "
                                                value="">
                                     </div>
                                     {{-- <div class="flex flex-row py-2 flow-root">
@@ -544,7 +546,7 @@
                                             class="font-semibold text-base cl0 mtext-101 pr-2 pt-1 @if ($locale_direction == 'rtl') float-right @else float-left @endif"
                                             for="address">@lang('lang.address')</label>
                                         <input type="text" name="address"
-                                               class=" c-f-s bg12 border-b border-dark rounded-lg w-full px-4 w-3/5 @if ($locale_direction == 'rtl') float-left @else float-right @endif "
+                                               class="text-color c-f-s bg12 border-b border-dark rounded-lg w-full px-4 w-3/5 @if ($locale_direction == 'rtl') float-left @else float-right @endif "
                                                value="">
                                     </div>
                                 </div>
@@ -553,7 +555,7 @@
                                     <label
                                         class="font-semibold text-base cl0 mtext-101  @if ($locale_direction == 'rtl') float-right @else float-left @endif"
                                         for="sales_note">@lang('lang.notes')</label>
-                                    <textarea class="c-f-s bg12 border-b border-dark rounded-lg w-full px-4" name="sales_note" id="sales_note" rows="3"></textarea>
+                                    <textarea class="text-color c-f-s bg12 border-b border-dark rounded-lg w-full px-4" name="sales_note" id="sales_note" rows="3"></textarea>
                                 </div>
 
 
