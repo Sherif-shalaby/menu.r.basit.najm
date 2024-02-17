@@ -77,51 +77,60 @@ class OrderController extends Controller
             $jsonProducts = $request->products;
             $productsArray = json_decode($jsonProducts, true);
             foreach ($productsArray as $key => $product) {
-                $discount_attr = null;
-                $discount = 0;
-                $size = null;
-                $product_data = Product::find($product['product_id']);
-                $variation = Variation::where('product_id', $product['product_id'])->where('name','Default')->first();
-                $price = $product['price'];
-                $order_details = [
-                    'order_id' => $order->id,
-                    'product_id' => $product_data->id,
-                    'variation_id' => $variation->id,
-                    'discount' => $discount,
-                    'quantity' => $product['quantity'],
-                    'price' => $price,
-                    'sub_total' => $price * $product['quantity'],
-                ];
-                $text .= urlencode($product_data->name) . '+' . $size . '%3A' . $order_details['quantity'] . "+%2A+" . $order_details['price'] . '=' . $order_details['sub_total'] . "+" . session('currency')['code'] . "%0D%0A+";
-                OrderDetails::create($order_details);
+                if(isset($product['price'])){
+                    $discount_attr = null;
+                    $discount = 0;
+                    $size = null;
+                    $product_data = Product::find($product['product_id']);
+                    $variation = Variation::where('product_id', $product['product_id'])->where('name','Default')->first();
+                    $price = $product['price'];
+                    $order_details = [
+                        'order_id' => $order->id,
+                        'product_id' => $product_data->id,
+                        'variation_id' => $variation->id,
+                        'discount' => $discount,
+                        'quantity' => $product['quantity'],
+                        'price' => $price,
+                        'sub_total' => $price * $product['quantity'],
+                    ];
+                    $text .= urlencode($product_data->name) . '+' . $size . '%3A' . $order_details['quantity'] . "+%2A+" . $order_details['price'] . '=' . $order_details['sub_total'] . "+" . session('currency')['code'] . "%0D%0A+";
+                    OrderDetails::create($order_details);
+                }
             }
             $order->final_total =  OrderDetails::where('order_id', $order->id)->sum('sub_total');
             $order->discount_amount = $order->order_details->sum('discount') ?? 0;
             $order->save();
 
-            if (env('ENABLE_POS_SYNC') && isset($request->table_num)) {
+            if(env('ENABLE_POS_SYNC')){
+
                 $options = array(
                     'cluster' =>  env('PUSHER_APP_CLUSTER'),
                     'useTLS' => true
                 );
-
-
+        
+        
                 $pusher = new Pusher(
                     env('PUSHER_APP_KEY'),
                     env('PUSHER_APP_SECRET'),
                     env('PUSHER_APP_ID'),
                     $options
                 );
-
-                $table = DiningTable::find($order->table_no);
+                if(!empty($request->table_no)){
+                $table=DiningTable::find($order->table_no);
                 $data = [
-                    'order_id' => $order->id,
-                    'table_no' => $order->table_no,
-                    'room_no' => $table->dining_room_id,
-                    'orders_count' => $order->order_details()->count()
+                    'order_id'=>$order->id,
+                    'table_no'=>$order->table_no,
+                    'room_no'=>$table->dining_room_id,
+                    'orders_count'=>$order->order_details()->count()
                 ];
+                }else{
+                    $data = [
+                        'order_id'=>$order->id,
+                        'table_no'=>'not exist',
+                        'orders_count'=>$order->order_details()->count()
+                    ];
+                }
                 $pusher->trigger('order-channel', 'new-order', $data);
-                
             }
 
 
