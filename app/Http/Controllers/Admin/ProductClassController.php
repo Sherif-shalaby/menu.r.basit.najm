@@ -146,12 +146,6 @@ class ProductClassController extends Controller
      */
     public function store(Request $request)
     {
-
-        // Debugging code to test file write permissions
-        $filePath = public_path('test_image.jpg');
-        $success = file_put_contents($filePath, 'Test content');
-        dd($success); // This will stop the execution and display the result
-
         //dd($request->image);
         if (!auth()->user()->can('category.create')) {
             abort(403, __('lang.not_authorized'));
@@ -175,27 +169,19 @@ class ProductClassController extends Controller
         DB::beginTransaction();
         $class = ProductClass::create($data);
 
-
+        dd($request->input('image'));
 
         if ($request->has('image')) {
             if (!empty($request->input('image'))) {
 
-                $imageContent = explode(",", $request->image)[1];
-                $decodedImage = base64_decode($imageContent);
 
-                if ($decodedImage === false) {
-                    throw new \Exception('Invalid Base64 string');
-                }
+                $extention = explode(";", explode("/", $request->image)[1])[0];
+                $image = rand(1, 1500) . "_image." . $extention;
+                $filePath = public_path($image);
+                $fp = file_put_contents($filePath, base64_decode(explode(",", $request->image)[1]));
+                $class->addMedia($filePath)->toMediaCollection('product_class');
 
-                $extension = explode(";", explode("/", $request->image)[1])[0];
-                $imageName = uniqid() . "_image." . $extension;
-                $filePath = "uploads/" . $imageName;
-
-                // Store the file using Laravel's storage facade
-                \Storage::put($filePath, $decodedImage);
-
-                // Add media to the class (update this part if needed)
-                $class->addMedia(storage_path('app/' . $filePath))->toMediaCollection('product_class');
+                // $class->addMediaFromDisk($request->input('uploaded_image_name'), 'temp')->toMediaCollection('product_class');
             }
         }
 
