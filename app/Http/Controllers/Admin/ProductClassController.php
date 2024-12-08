@@ -179,6 +179,7 @@ class ProductClassController extends Controller
                 $filePath = public_path($image);
 
                 dd($filePath);
+                //
                 $fp = file_put_contents($filePath, base64_decode(explode(",", $request->image)[1]));
                 $class->addMedia($filePath)->toMediaCollection('product_class');
 
