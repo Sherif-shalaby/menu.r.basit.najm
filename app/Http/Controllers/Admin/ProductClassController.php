@@ -146,6 +146,12 @@ class ProductClassController extends Controller
      */
     public function store(Request $request)
     {
+
+        // Debugging code to test file write permissions
+        $filePath = public_path('test_image.jpg');
+        $success = file_put_contents($filePath, 'Test content');
+        dd($success); // This will stop the execution and display the result
+
         //dd($request->image);
         if (!auth()->user()->can('category.create')) {
             abort(403, __('lang.not_authorized'));
