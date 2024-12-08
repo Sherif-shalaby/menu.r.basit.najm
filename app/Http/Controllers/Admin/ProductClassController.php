@@ -169,7 +169,6 @@ class ProductClassController extends Controller
         DB::beginTransaction();
         $class = ProductClass::create($data);
 
-        dd($request->input('image'));
 
         if ($request->has('image')) {
             if (!empty($request->input('image'))) {
@@ -178,6 +177,8 @@ class ProductClassController extends Controller
                 $extention = explode(";", explode("/", $request->image)[1])[0];
                 $image = rand(1, 1500) . "_image." . $extention;
                 $filePath = public_path($image);
+
+                dd($filePath);
                 $fp = file_put_contents($filePath, base64_decode(explode(",", $request->image)[1]));
                 $class->addMedia($filePath)->toMediaCollection('product_class');
 
