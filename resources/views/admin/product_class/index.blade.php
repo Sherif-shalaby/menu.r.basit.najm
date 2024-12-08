@@ -15,6 +15,9 @@
 <x-adminlte-card title="{{__('lang.categories')}}" theme="{{config('adminlte.right_sidebar_theme')}}"
     theme-mode="outline" icon="fas fa-file">
 
+
+    <img src="{{ asset('storage/1/51_image.jpeg') }}" alt="" width="50" height="50">
+
     <div class="table-responsive">
         <table id="product_class_table" class="table" style="width: 100%;">
             <thead>
